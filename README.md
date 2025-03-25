@@ -1,2 +1,2 @@
 # DataStructureCourse
-一个学习代码仓库for EternalWave
+用来记录一些我的数据结构的代码（（（防止我找不到）））
