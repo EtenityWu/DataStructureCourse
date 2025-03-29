@@ -11,13 +11,13 @@ private:
         T data;
         node():left(nullptr),right(nullptr){}
         explicit node(T t,node *l= nullptr,node *r = nullptr):data(t),left(l),right(r){}
-        ~node(){}
+        ~node()= default;
     };
     node *root;
 public:
     //这里的flag都是为了识别空树设置的特殊值
     binaryTree():root(nullptr){}
-    binaryTree(T x){root = new node(x);}
+    explicit binaryTree(T x){root = new node(x);}
     ~binaryTree(){clear(root);};
     void clear(){clear(root);};
     bool isEmpty()const{return root== nullptr;};
@@ -37,6 +37,64 @@ private:
     void midOrder(node *t)const;
     void postOrder(node *t)const;
 };
+
+template<class T>
+void print(const binaryTree<T> &t, T flag) {
+    queue<T> que;
+    que.push(t.root->data);
+    cout<<endl;
+    while (!que.empty()){
+        char p,l,r;
+        p = que.pop();
+        l = t.lChild(p,flag);
+        r = t.rChild(p,flag);
+        cout<<p<<" "<<l<<" "<<r<<endl;
+        if(l!=flag)que.push(l);
+        if(r!=flag)que.push(r);
+    }
+
+}
+
+template<class T>
+void binaryTree<T>::creatTree(T flag) {
+    queue<node*>que;
+    node *temp;
+    T x,ldata,rdata;
+    cout<<"root data:"<<endl;
+    cin>>x;
+    root = new node(x);
+    que.push(x);
+    while (!que.empty()){
+        temp = que.pop();
+        cout<<"left and right:"<<endl;
+        cin>>ldata>>rdata;
+        if(ldata!=flag)que.push(temp->left=new node(ldata));
+        if(rdata!=flag)que.push(temp->left=new node(rdata));
+    }
+}
+
+template<class T>
+T binaryTree<T>::rChild(T x, T flag) const {
+    node *tmp = find(x,root);
+    if(tmp== nullptr||tmp->right== nullptr)return flag;
+    return tmp->right->data;
+}
+
+template<class T>
+T binaryTree<T>::lChild(T x, T flag) const {
+    node *temp =find(x,root);
+    if(temp==nullptr||temp->left==nullptr)return flag;
+    return temp->left->data;
+}
+
+template<class T>
+binaryTree<T>::node *binaryTree<T>::find(T x, binaryTree::node *t) const {
+    node *temp;
+    if(t== nullptr)return nullptr;
+    if(t->data==x)return t;
+    if((temp= find(x,t->left)))return temp;
+    return find(x,t->right);
+}
 
 template<class T>
 void binaryTree<T>::levelOrder() const {
