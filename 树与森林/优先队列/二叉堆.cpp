@@ -7,8 +7,9 @@ private:
     int maxSize;
     void percolate(int);
     void build(){
-        for(int i=currL/2;i>0;i--)
+        for(int i=currL/2;i>=1;i--){
             percolate(i);
+        }
     }
 public:
     explicit BinaryHeap(int cap=100):maxSize(cap),currL(0){
@@ -22,28 +23,28 @@ public:
     ~BinaryHeap(){delete[]arr;}
     bool empty()const{return currL==0;}
     void push(int x){
-        currL++;
-        int hole = currL;
-        for(;hole>1&&x<arr[hole/2];hole/=2){
+        int hole = ++currL;
+        for(;hole>1&&x>arr[hole/2];hole/=2)
             swap(arr[hole],arr[hole/2]);
-        }
-        arr[hole]=x;
+        arr[hole] = x;
     };
     int pop(){
-        int minX = arr[1];
+        int minimum = arr[1];
         arr[1] = arr[currL--];
         percolate(1);
-        return minX;
+        return minimum;
     };
 };
+
 void BinaryHeap::percolate(int hole) {
-    int temp = arr[hole];
-    int child;
-    for(;hole*2<=currL;hole = child){
+    int child,temp = arr[hole];
+    for(;hole*2<=currL;hole=child){
         child = hole*2;
-        if(child!=currL&&arr[child+1]<arr[child])child++;
-        if(temp<arr[child])break;
-        else arr[hole] = arr[child];
+        if(child!=currL&&arr[child]>arr[child+1])child++;
+        if(arr[child]>=temp)break;
+        else{
+            arr[hole] = arr[child];
+        }
     }
     arr[hole] = temp;
 }
